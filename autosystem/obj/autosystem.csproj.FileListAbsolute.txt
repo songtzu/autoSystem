@@ -1,0 +1,5 @@
+F:\ats\autosystem\autosystem\obj\Debug\ResolveAssemblyReference.cache
+F:\ats\autosystem\autosystem\bin\Debug\autosystem.exe
+F:\ats\autosystem\autosystem\bin\Debug\autosystem.pdb
+F:\ats\autosystem\autosystem\obj\Debug\autosystem.exe
+F:\ats\autosystem\autosystem\obj\Debug\autosystem.pdb
