@@ -10,7 +10,7 @@ namespace autosystem
     class MathEngine
     {
         /// <summary>
-        /// 执行此类的主函数。
+        /// 执行此类的主函数。在下载任务完成，均值计算任务完成之后执行。
         /// </summary>
         public void LoopTask(){
 

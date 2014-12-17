@@ -114,14 +114,52 @@ namespace autosystem
         /// <param name="isRelease">true：部署环境，false：测试环境</param>
         public void DownloadThread()
         {
+            //初始化一个历史时间戳，当前时间和时间戳不等时，执行下载任务。否则休眠一小时之后询问。
             string currentTime = Convert.ToDateTime(DateTime.Parse("2010-10-10")).ToShortDateString(); 
 
             while (currentTime != DateTime.Now.ToShortDateString())
             {
 
                 string strDate = DateTime.Now.Year.ToString() + "-" + DateTime.Now.Month.ToString() + "-" + DateTime.Now.Day.ToString();
-                if (!m_isRelease)
+                //if (!m_isRelease)
+                //{
+                //    StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
+                //    string shcode;
+                //    while ((shcode = sr.ReadLine()) != null)
+                //    {
+                //        Console.WriteLine(shcode);
+
+                //        int npage = 0;
+                //        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", shcode, strDate, npage);
+                //        int rtval = 0;
+                //        while ((rtval = DownHtmlUrl(parserurl, "", shcode)) != 0)
+                //        {
+
+                //            npage += rtval;
+                //            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate{1}&start={2}&num=200", shcode, strDate, npage);
+                //        }
+                //    }
+
+                //    sr = new StreamReader("..\\..\\shenzhen.txt");
+                //    string szcode;
+                //    while ((szcode = sr.ReadLine()) != null)
+                //    {
+                //        Console.WriteLine(szcode);
+
+                //        int npage = 0;
+                //        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
+                //        int rtval = 0;
+                //        while ((rtval = DownHtmlUrl(parserurl, "", szcode)) != 0)
+                //        {
+
+                //            npage += rtval;
+                //            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
+                //        }
+                //    }
+                //}
+                //else
                 {
+                    //从数据库中读取今天是否已经有这个code对应的交易数据了。如果有，无需下载。
                     StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
                     string shcode;
                     while ((shcode = sr.ReadLine()) != null)
@@ -137,6 +175,7 @@ namespace autosystem
                             npage += rtval;
                             parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate{1}&start={2}&num=200", shcode, strDate, npage);
                         }
+                        //该代码对应的最早股票数据已经下载完成。将股票代码表中的该股票的代码数据是否完备设置为true.任何时候，在访问Google之前，都需要判断一下该股票数据是否完备，如果完备，则更新最新的数据即可。
                     }
 
                     sr = new StreamReader("..\\..\\shenzhen.txt");
@@ -154,45 +193,14 @@ namespace autosystem
                             npage += rtval;
                             parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
                         }
-                    }
-                }
-                else
-                {
-                    StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
-                    string shcode;
-                    while ((shcode = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine(shcode);
-
-                        int npage = 0;
-                        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", shcode, strDate, npage);
-                        int rtval = 0;
-                        while ((rtval = DownHtmlUrl(parserurl, "", shcode)) != 0)
-                        {
-
-                            npage += rtval;
-                            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate{1}&start={2}&num=200", shcode, strDate, npage);
-                        }
-                    }
-
-                    sr = new StreamReader("..\\..\\shenzhen.txt");
-                    string szcode;
-                    while ((szcode = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine(szcode);
-
-                        int npage = 0;
-                        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
-                        int rtval = 0;
-                        while ((rtval = DownHtmlUrl(parserurl, "", szcode)) != 0)
-                        {
-
-                            npage += rtval;
-                            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
-                        }
+                        //该代码对应的最早股票数据已经下载完成。将股票代码表中的该股票的代码数据是否完备设置为true.
                     }
                 }
 
+                //计算均值。
+                DBManager.TaskAverageManager();
+
+                //休眠一小时之后重启执行。
                 currentTime = DateTime.Now.ToShortDateString();
                 Thread.Sleep(1000 * 60);
 

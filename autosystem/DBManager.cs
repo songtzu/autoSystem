@@ -77,12 +77,18 @@ namespace autosystem
                 }
 
             }
-            catch { }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+            }
 
         }
 
 
-        static void TaskAverageManager() {
+        /// <summary>
+        /// 每天执行一个回合此运算，用来计算某个交易日对应的均线。可接在下载线程任务之后执行。
+        /// </summary>
+        public static void TaskAverageManager() {
             StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
             string shcode;
             while ((shcode = sr.ReadLine()) != null)
