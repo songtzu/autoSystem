@@ -27,7 +27,7 @@ namespace autosystem
     public class DownloadGGData
     {
 
-        static string m_configpath = System.IO.Directory.GetCurrentDirectory();
+        public static string m_configpath = System.IO.Directory.GetCurrentDirectory();
         static string m_downloadfilename = "download";
         static bool m_isRelease = false;
         /// <summary>
@@ -158,33 +158,37 @@ namespace autosystem
                 }
                 else
                 {
-                    foreach (string filename in Directory.GetFiles("..\\..\\sh", "*.cvs", SearchOption.AllDirectories))
+                    StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
+                    string shcode;
+                    while ((shcode = sr.ReadLine()) != null)
                     {
-                        Console.WriteLine(filename);
-                        string scode = filename.Substring(filename.Length - 10, 6);
+                        Console.WriteLine(shcode);
+
                         int npage = 0;
-                        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", scode, npage);
+                        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", shcode, strDate, npage);
                         int rtval = 0;
-                        while ((rtval = DownHtmlUrl(parserurl, "", scode)) != 0)
+                        while ((rtval = DownHtmlUrl(parserurl, "", shcode)) != 0)
                         {
-                            rtval = 0;
+
                             npage += rtval;
-                            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", scode, strDate, npage);
+                            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHA%3A{0}&gl=cn&ei=AhMkU-jNPMfYkgXZMw&startdate=Jan+1%2C+1990&enddate{1}&start={2}&num=200", shcode, strDate, npage);
                         }
                     }
 
-                    foreach (string filename in Directory.GetFiles("..\\..\\sz", "*.cvs", SearchOption.AllDirectories))
+                    sr = new StreamReader("..\\..\\shenzhen.txt");
+                    string szcode;
+                    while ((szcode = sr.ReadLine()) != null)
                     {
-                        Console.WriteLine(filename);
-                        string scode = filename.Substring(filename.Length - 10, 6);
+                        Console.WriteLine(szcode);
+
                         int npage = 0;
-                        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", scode, strDate, npage);
+                        string parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
                         int rtval = 0;
-                        while ((rtval = DownHtmlUrl(parserurl, "", scode)) != 0)
+                        while ((rtval = DownHtmlUrl(parserurl, "", szcode)) != 0)
                         {
-                            rtval = 0;
+
                             npage += rtval;
-                            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", scode, strDate, npage);
+                            parserurl = String.Format("http://www.google.com.hk/finance/historical?q=SHE%3A{0}&hl=zh-CN&gl=cn&ei=LxIkU_jILs_VkAXenQE&startdate=Jan+1%2C+1990&enddate={1}&start={2}&num=200", szcode, strDate, npage);
                         }
                     }
                 }
@@ -234,10 +238,11 @@ namespace autosystem
                 string final = thired.Replace("\n", "");
                 string outf = final.Replace("<tr><td  class=\"lm\">", "\r\n");
 
-                string filepath = String.Format("{0}\\{1}\\{2}.txt", m_configpath, m_downloadfilename, scode);
+                //string filepath = String.Format("{0}\\{1}\\{2}.txt", m_configpath, m_downloadfilename, scode);
                 //TODO
                 ///此处应该直接解析完写入数据库。
-                WritToLog(outf, filepath);
+                //WritToLog(outf, filepath);
+                DBManager.InsertDealRecord(outf, scode);
                 string[] cc = Regex.Split(outf, "\n", RegexOptions.IgnoreCase);//outf.Split("\r");
                 bnext = cc.Length;
 
