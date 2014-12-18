@@ -4,6 +4,7 @@ using System.Text;
 using System.Data.OleDb;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Data.SqlClient;
 
 namespace autosystem
 {
@@ -108,6 +109,64 @@ namespace autosystem
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stockid">stock id</param>
+        /// <param name="group">sz or sh</param>
+        public static void FinishedDownloadCertainStockData(string stockid,string group)
+        {
+            try
+            {
+                initconfig();
+
+                sqlInsert = "insert into t_code([code],[market],[loaddata]) values('";
+                sqlInsert += stockid;
+                sqlInsert += "',";
+                sqlInsert += group;
+                sqlInsert += ",";
+                sqlInsert += 1; 
+                sqlInsert += "')";
+                sqlcmd.CommandText = sqlInsert;
+                int n = sqlcmd.ExecuteNonQuery();              //执行查询 
+
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+            }
+        }
+
+        /// <summary>
+        /// 如果数据库存在数据，返回日期，否则返回空
+        /// </summary>
+        /// <param name="sStockNum"></param>
+        /// <returns></returns>
+        public static string isStockDataLoaded(string sStockNum)
+        {
+            //select top 1 k_data.* from k_data,t_code where t_code.code="600000" and t_code.code=k_data.code order by k_data.t_date desc
+            try
+            {
+                initconfig();
+
+                sqlInsert = string.Format("select top 1 k_data.* from k_data,t_code where t_code.code=\"{0}\" and t_code.code=k_data.code order by k_data.t_date desc", sStockNum);
+                sqlcmd.CommandText = sqlInsert;
+                OleDbDataReader reader = sqlcmd.ExecuteReader(); //执行command并得到相应的DataReader执行SQL，返回一个“流”
+                if (reader.Read())
+                {
+                    return reader["t_date"].ToString();
+                }
+                else {
+                    return "";
+                }
+            }
+            catch (Exception exp)
+            {
+                Console.WriteLine(exp.Message);
+                return "";
+            }
+           
+        }
 
 
         /* select avg([close]) from (select top 3
