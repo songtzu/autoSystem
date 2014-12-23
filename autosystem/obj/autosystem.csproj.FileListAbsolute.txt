@@ -1,0 +1,6 @@
+F:\ats\git\autoSystem\autosystem\bin\Debug\autosystem.exe
+F:\ats\git\autoSystem\autosystem\bin\Debug\autosystem.pdb
+F:\ats\git\autoSystem\autosystem\obj\Debug\ResolveAssemblyReference.cache
+F:\ats\git\autoSystem\autosystem\obj\Debug\autosystem.exe
+F:\ats\git\autoSystem\autosystem\obj\Debug\autosystem.pdb
+F:\ats\git\autoSystem\autosystem\bin\Debug\Interop.JRO.dll
