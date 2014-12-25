@@ -93,7 +93,7 @@ namespace autosystem
                     {
                         return;
                     }
-                    sqlInsert = "insert into k_data([t_date],[open],[high],[low],[close],[code]) values('";
+                    sqlInsert = "insert into t_data([t_date],[open],[high],[low],[close],[code]) values('";
                     sqlInsert += strline[0];
                     sqlInsert += "',";
                     sqlInsert += Convert.ToDouble(strline[1]);
@@ -103,9 +103,9 @@ namespace autosystem
                     sqlInsert += Convert.ToDouble(strline[3]);
                     sqlInsert += ",";
                     sqlInsert += Convert.ToDouble(strline[4]);
-                    sqlInsert += ",'";
+                    sqlInsert += ",";
                     sqlInsert += code;
-                    sqlInsert += "')";
+                    sqlInsert += ")";
                     sqlcmd.CommandText = sqlInsert;
                     int n = sqlcmd.ExecuteNonQuery();              //执行查询
                     
@@ -124,14 +124,7 @@ namespace autosystem
         /// 每天执行一个回合此运算，用来计算某个交易日对应的均线。可接在下载线程任务之后执行。
         /// </summary>
         public static void TaskAverageManager() {
-            StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
-            string shcode;
-            while ((shcode = sr.ReadLine()) != null)
-            {
-                Console.WriteLine("average" + shcode);
-                DoAverage(30, shcode);
-                DoAverage(60, shcode);
-            }
+
 
             ///////////////////////////////////////////////////
             StreamReader sr2 = new StreamReader("..\\..\\shenzhen.txt");
@@ -142,6 +135,17 @@ namespace autosystem
                 DoAverage(30, szcode);
                 DoAverage(60, szcode);
             }
+
+
+            StreamReader sr = new StreamReader("..\\..\\shanghai.txt");
+            string shcode;
+            while ((shcode = sr.ReadLine()) != null)
+            {
+                Console.WriteLine("average" + shcode);
+                DoAverage(30, shcode);
+                DoAverage(60, shcode);
+            }
+
         }
 
 
@@ -157,9 +161,9 @@ namespace autosystem
                 //insert into t_code([code],[market],[loaddata]) values('600000',sh,1')
                 initconfig();
 
-                sqlInsert = "insert into t_code([code],[market],[loaddata]) values('";
+                sqlInsert = "insert into t_code([code],[market],[loaddata]) values(";
                 sqlInsert += stockid;
-                sqlInsert += "','";
+                sqlInsert += ",'";
                 sqlInsert += group;
                 sqlInsert += "',";
                 sqlInsert += 1; 
@@ -186,7 +190,7 @@ namespace autosystem
             {
                 initconfig();
 
-                sqlInsert = string.Format("select top 1 k_data.* from k_data,t_code where t_code.code=\"{0}\" and t_code.code=k_data.code order by k_data.t_date desc", sStockNum);
+                sqlInsert = string.Format("select top 1 t_data.* from k_data,t_code where t_code.code={0} and t_code.code=k_data.code order by k_data.t_date desc", sStockNum);
                 sqlcmd.CommandText = sqlInsert;
                 OleDbDataReader reader = sqlcmd.ExecuteReader(); //执行command并得到相应的DataReader执行SQL，返回一个“流”
                 if (reader.Read())
@@ -223,7 +227,7 @@ namespace autosystem
             initconfig();
             int count = 0;
             //此处需要判断该字段为空。
-            string strCom = "Select * from k_data  where code='" + scode + "' and k" + kname.ToString() + " is NULL order by t_date desc";
+            string strCom = "Select * from t_data  where code=" + scode + " and k" + kname.ToString() + " is NULL order by t_date desc";
             OleDbCommand myCommand = new OleDbCommand(strCom, objConnection);
             OleDbCommand writeCommand = new OleDbCommand(strCom, objConnection);
             OleDbDataReader reader;
@@ -235,14 +239,14 @@ namespace autosystem
                 {
                     count++;
                     string time = reader["t_date"].ToString();
-                    string strAvgSql = "select avg([close]) from (select top " + kname.ToString() + " [close] from k_data where code='" + scode + "' and t_date<=#" + time + "# order by t_date desc)";
+                    string strAvgSql = "select avg([close]) from (select top " + kname.ToString() + " [close] from t_data where code=" + scode + " and t_date<=#" + time + "# order by t_date desc)";
 
                     writeCommand.CommandText = strAvgSql;
                     decimal avg = Convert.ToDecimal(writeCommand.ExecuteScalar());
 
 
 
-                    string insertAvg = "update k_data set k" + kname.ToString() + "=" + avg + " where code='" + scode + "' and t_date=#" + time + "#";
+                    string insertAvg = "update t_data set k" + kname.ToString() + "=" + avg + " where code=" + scode + " and t_date=#" + time + "#";
                     writeCommand.CommandText = insertAvg;
                     int line = writeCommand.ExecuteNonQuery();
                     Console.WriteLine("average date is " + avg.ToString() + "   " + count.ToString());

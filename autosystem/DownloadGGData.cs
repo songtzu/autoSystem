@@ -114,7 +114,7 @@ namespace autosystem
         /// <param name="isRelease">true：部署环境，false：测试环境</param>
         public void DownloadThread()
         {
-             DBManager.TaskAverageManager();
+            // DBManager.TaskAverageManager();
             //初始化一个历史时间戳，当前时间和时间戳不等时，执行下载任务。否则休眠一小时之后询问。
             string currentTime = Convert.ToDateTime(DateTime.Parse("2010-10-10")).ToShortDateString();
             while (true)
